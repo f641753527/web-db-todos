@@ -1,24 +1,33 @@
 <template>
   <div>
+    <Header @submit="showEdit" />
     <List :list="list" />
+    <Edit :is-show="isShowEdit" :hide-edit="hideEdit" />
   </div>
 </template>
 
 <script>
-import { ref } from "vue";
 import List from "./child/List";
-import { getTodoList } from "@/db/todo";
+import Header from "./child/FilterHeaer";
+import Edit from "./child/Edit";
+import useList from "./useList";
+import useEdit from "./child/useEdit";
 
 export default {
   name: "Home",
-  components: { List },
+  components: { List, Header, Edit },
   setup() {
-    const list = ref([]);
-    getTodoList().then((res) => {
-      list.value = res;
-    });
+    const { list, handleAdd } = useList();
+
+    const { isShowEdit, showEdit, hideEdit } = useEdit();
     return {
+      //useList
       list,
+      handleAdd,
+      // useEdit
+      isShowEdit,
+      showEdit,
+      hideEdit,
     };
   },
 };
