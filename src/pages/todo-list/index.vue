@@ -1,33 +1,72 @@
 <template>
   <div>
-    <Header @submit="showEdit" />
-    <List :list="list" />
-    <Edit :is-show="isShowEdit" :hide-edit="hideEdit" />
+    <Header @submit="handleAdd" />
+    <List :list="list" @delete-item="deleteDataById" @handleEdit="handleEdit" />
+    <EditForm
+      v-if="isShowEditForm"
+      :is-edit="isEdit"
+      :edit-item="editItem"
+      :is-show="isShowEditForm"
+      :hide="hideEditForm"
+      @handleAddEditSubmit="handleAddEditSubmit"
+    />
   </div>
 </template>
 
 <script>
+import { ref } from "vue";
 import List from "./child/List";
 import Header from "./child/FilterHeaer";
-import Edit from "./child/Edit";
-import useList from "./useList";
+import EditForm from "./child/EditForm";
 import useEdit from "./child/useEdit";
+import useHandleData from "./useHandleData";
 
 export default {
   name: "Home",
-  components: { List, Header, Edit },
+  components: { List, Header, EditForm },
   setup() {
-    const { list, handleAdd } = useList();
+    const isEdit = ref(false);
+    const editItem = ref(null);
 
-    const { isShowEdit, showEdit, hideEdit } = useEdit();
+    const handleAdd = () => {
+      isEdit.value = false;
+      showEditForm();
+    };
+    const handleEdit = (data) => {
+      editItem.value = data;
+      isEdit.value = true;
+      showEditForm();
+    };
+
+    const handleAddEditSubmit = (isEdit, formData, id) => {
+      if (!isEdit) {
+        addDataAPI(formData);
+      } else {
+        updateDataById(id, formData);
+      }
+    };
+
+    const { isShowEditForm, showEditForm, hideEditForm } = useEdit();
+    // handle data
+    const { list, getListAPI, addDataAPI, deleteDataById, updateDataById } =
+      useHandleData(hideEditForm);
+    getListAPI();
+
     return {
-      //useList
-      list,
+      isEdit,
+      editItem,
       handleAdd,
+      handleEdit,
+      handleAddEditSubmit,
       // useEdit
-      isShowEdit,
-      showEdit,
-      hideEdit,
+      isShowEditForm,
+      showEditForm,
+      hideEditForm,
+      // useHandleData
+      list,
+      addDataAPI,
+      deleteDataById,
+      updateDataById,
     };
   },
 };

@@ -1,15 +1,15 @@
 import { ref } from "vue";
 
 export default function () {
-  const isShowEdit = ref(false);
+  const isShowEditForm = ref(false);
 
-  const showEdit = () => {
-    isShowEdit.value = true;
+  const showEditForm = () => {
+    isShowEditForm.value = true;
   };
 
-  const hideEdit = () => {
-    isShowEdit.value = false;
+  const hideEditForm = () => {
+    isShowEditForm.value = false;
   };
 
-  return { isShowEdit, showEdit, hideEdit };
+  return { isShowEditForm, showEditForm, hideEditForm };
 }
